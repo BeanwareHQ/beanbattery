@@ -14,9 +14,9 @@ namespace libBB {
 /**
  * @param s This is a string with "POWER_SUPPLY_" chopped off.
  */
-UeventKey::UeventKey(const std::string& s) {
+UeventKey ueventKeyFromString(const std::string& s) {
 
-    using K = UeventKey::Kind;
+    using K = UeventKey;
     std::unordered_map<std::string, K> map = {
         {"NAME",               K::NAME              },
         {"TYPE",               K::TYPE              },
@@ -37,14 +37,14 @@ UeventKey::UeventKey(const std::string& s) {
         {"SERIAL_NUMBER",      K::SERIAL_NUMBER     },
     };
 
-    this->value = map[s];
+    return map[s];
 }
 
 /**
  * @throws libBB::InvalidBatteryException
  */
 Uevent::Uevent(const Config& cfg) {
-    fs::path fpath = fs::path("/sys/class/power_supply") / cfg.bat;
+    auto fpath = fs::path("/sys/class/power_supply") / cfg.bat;
 
     if (!fs::exists(fpath)) {
         std::cerr << "invalid battery\n";
@@ -72,7 +72,7 @@ void Uevent::refresh() {
         key = line.substr(13, equalsPos);
         value = line.substr(equalsPos);
 
-        this->state[UeventKey(key)] = value;
+        this->state[ueventKeyFromString(key)] = value;
     }
 }
 
