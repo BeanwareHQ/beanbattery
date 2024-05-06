@@ -76,8 +76,12 @@ void Uevent::refresh() {
     }
 }
 
-auto Uevent::operator[](const UeventKey& key) -> const std::string& {
-    return this->state[key];
+auto Uevent::operator[](const UeventKey& key) const -> const std::string& {
+    return this->get(key);
+}
+
+auto Uevent::get(const UeventKey& key) const -> const std::string& {
+    return this->state.at(key);
 }
 
 } // namespace libBB

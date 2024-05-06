@@ -2,14 +2,17 @@
 
 #include <exception>
 #include <fstream>
-#include <memory>
 #include <string>
 #include <unordered_map>
 
 namespace libBB {
 
-struct Config {
+class Config {
+public:
     std::string bat;
+    int criticalThreshold;
+    int lowThreshold;
+    int fullAt;
 };
 
 class InvalidBatteryException : std::exception {
@@ -53,6 +56,7 @@ public:
 
     void refresh();
     auto get(const UeventKey& key) const -> const std::string&;
+    auto operator[](const UeventKey& key) const -> const std::string&;
 
 protected:
     std::unordered_map<UeventKey, std::string> state;
@@ -66,19 +70,19 @@ public:
         CRITICAL,
         LOW,
         NORMAL,
-        HIGH,
         FULL,
     };
 
     Capacity();
-    Capacity(const Uevent& uev);
     ~Capacity();
-    void refresh();
+    Capacity(const Uevent& uev, Config& cfg);
+    void refresh(const Uevent& uev);
 
 protected:
     int cycleCount;
     int capacity;
     Level chargeLevel;
+    Config& cfg;
 
     void setChargeLevel();
 };
