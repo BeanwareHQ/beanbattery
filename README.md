@@ -1,3 +1,3 @@
 # beanbattery
 
-a simple battery info viewer written in C++20.
+a simple battery info viewer written in Rust.
