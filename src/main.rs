@@ -67,6 +67,7 @@ impl std::error::Error for InvalidBatteryError {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct Battery {
     id: u8,
     status: Status,
@@ -109,7 +110,7 @@ impl Battery {
                 }
             })
             .for_each(|val| {
-                if val[0].is_empty() {
+                if !val[0].is_empty() {
                     _ = map.insert(val[0].to_owned(), val[1].to_owned())
                 }
             });
@@ -126,7 +127,7 @@ impl Battery {
             design_capacity: map["ENERGY_FULL_DESIGN"].parse::<u64>().unwrap(),
             capacity_full: map["ENERGY_FULL"].parse::<u64>().unwrap(),
             capacity_now: map["ENERGY_NOW"].parse::<u64>().unwrap(),
-            capacity_percent: map["CAPACITY_LEVEL"].parse::<u8>().unwrap(),
+            capacity_percent: map["CAPACITY"].parse::<u8>().unwrap(),
             capacity_level: Capacity::Normal, // FIXME:
             model_name: map["MODEL_NAME"].clone().into(),
             manufacturer: map["MANUFACTURER"].clone().into(),
@@ -136,5 +137,5 @@ impl Battery {
 }
 
 fn main() {
-    println!("{:?}", Battery::new(0));
+    println!("{:?}", Battery::new(0).unwrap());
 }
